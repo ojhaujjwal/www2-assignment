@@ -1,6 +1,8 @@
 <?php
 namespace App\Entity;
 
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 class TvShow
 {
@@ -20,14 +22,27 @@ class TvShow
     protected $description;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $imageUrl;
 
     /**
+     * @var Collection
+     */
+    protected $reviews;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->reviews = new ArrayCollection();
+    }
+
+    /**
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -35,7 +50,7 @@ class TvShow
     /**
      * @return string
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -43,7 +58,7 @@ class TvShow
     /**
      * @param string $title
      */
-    public function setTitle($title)
+    public function setTitle(string $title)
     {
         $this->title = $title;
     }
@@ -51,7 +66,7 @@ class TvShow
     /**
      * @return string
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
@@ -59,13 +74,13 @@ class TvShow
     /**
      * @param string $description
      */
-    public function setDescription($description)
+    public function setDescription(string $description)
     {
         $this->description = $description;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getImageUrl()
     {
@@ -75,8 +90,25 @@ class TvShow
     /**
      * @param string $imageUrl
      */
-    public function setImageUrl($imageUrl)
+    public function setImageUrl(string $imageUrl)
     {
         $this->imageUrl = $imageUrl;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    /**
+     * @param Review $review
+     */
+    public function addReview(Review $review)
+    {
+        $this->reviews->add($review);
+        $review->setTvShow($this);
     }
 }

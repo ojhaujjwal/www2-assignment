@@ -4,17 +4,19 @@
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
                   http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
 
-    <entity name="App\Entity\TvShow" table="tv_shows">
+    <entity name="App\Entity\Review" table="reviews">
 
         <id name="id" type="integer">
             <generator strategy="AUTO" />
         </id>
 
-        <field name="title" type="string" length="255" nullable="false" />
-        <field name="description" type="text" nullable="true"/>
-        <field name="imageUrl" type="string" length="255" nullable="true" />
+        <field name="review" type="text" nullable="false" />
+        <field name="rating" type="smallint" nullable="false"/>
+        <field name="reviewerName" type="string" length="255" nullable="false" />
 
-        <one-to-many field="reviews" target-entity="App\Entity\Review" mapped-by="tvShow" />
+        <many-to-one field="tvShow" target-entity="App\Entity\TvShow" inversed-by="reviews">
+            <join-column name="tv_show_id" referenced-column-name="id" nullable="false" />
+        </many-to-one>
     </entity>
 
 </doctrine-mapping>

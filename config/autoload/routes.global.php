@@ -4,11 +4,12 @@ return [
     'dependencies' => [
         'invokables' => [
             Zend\Expressive\Router\RouterInterface::class => Zend\Expressive\Router\FastRouteRouter::class,
-            App\Action\PingAction::class => App\Action\PingAction::class,
-            Api\TvShow\TvShowResource::class      => Api\TvShow\TvShowResource::class,
+            App\Action\PingAction::class => App\Action\PingAction::class
         ],
         'factories' => [
             App\Action\HomePageAction::class => App\Action\HomePageFactory::class,
+            Api\TvShow\TvShowResource::class      => Api\TvShow\TvShowResourceFactory::class,
+            Api\TvShow\ReviewResource::class      => Api\TvShow\ReviewResourceFactory::class,
         ],
     ],
 
@@ -26,10 +27,10 @@ return [
             'allowed_methods' => ['GET', 'POST', 'PUT'],
         ],
         [
-            'name' => 'api.ping',
-            'path' => '/api/ping',
-            'middleware' => App\Action\PingAction::class,
-            'allowed_methods' => ['GET'],
+            'name' => 'api.tv-show.reviews',
+            'path' => '/api/tv-shows/{tvShowId:\d+}/reviews',
+            'middleware' => Api\TvShow\ReviewResource::class,
+            'allowed_methods' => ['GET', 'POST'],
         ],
     ],
 ];

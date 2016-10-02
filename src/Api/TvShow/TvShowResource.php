@@ -2,22 +2,30 @@
 namespace Api\TvShow;
 
 use Api\AbstractResource;
-use Zend\Diactoros\Response\JsonResponse;
+use App\Entity\TvShow;
 
 class TvShowResource extends AbstractResource
 {
-    public function fetch($id)
+    const ENTITY_CLASS = TvShow::class;
+
+
+    public function create(TvShow $tvShow)
     {
-        return [];
+        $this->entityManager->persist($tvShow);
+        $this->entityManager->flush();
+
+        return $tvShow;
     }
 
-    public function fetchAll(array $params = [])
+    protected function fetch($id)
     {
-        return [];
+        $repository = $this->entityManager->getRepository(static::ENTITY_CLASS);
+        return $repository->find($id);
     }
 
-    public function create(array $data = [])
+    protected function fetchAll($data = [])
     {
-        return new JsonResponse([], 201);
+        $repository = $this->entityManager->getRepository(static::ENTITY_CLASS);
+        return $repository->findBy($data);
     }
 }
