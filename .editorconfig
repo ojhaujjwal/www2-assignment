@@ -19,6 +19,6 @@ continuation_indent_size = 4
 indent_size = 2
 continuation_indent_size = 2
 
-[*.html]
+[*.{html,html.twig}]
 indent_size = 2
 continuation_indent_size = 8

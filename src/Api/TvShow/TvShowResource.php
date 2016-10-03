@@ -25,7 +25,7 @@ class TvShowResource extends AbstractResource
 
         $tvShow = $repository->find($id);
         if (!$tvShow) {
-            return new JsonResponse(['message' => 'Not found'], 404);
+            return new JsonResponse(['message' => 'Not found'], 404, [], JSON_PRETTY_PRINT);
         }
 
         return $tvShow;

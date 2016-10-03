@@ -122,7 +122,7 @@ class AbstractResource
 
         $entity = $this->entityManager->getRepository($entityClass)->find($id);
         if (!$entity) {
-            return new JsonResponse(['message' => 'Not found'], 404);
+            return new JsonResponse(['message' => 'Not found'], 404, [], JSON_PRETTY_PRINT);
         }
         $entity = $this->hydrator->hydrate($data, $entity);
 
@@ -138,7 +138,7 @@ class AbstractResource
 
         $entity = $this->entityManager->getRepository($entityClass)->find($id);
         if (!$entity) {
-            return new JsonResponse(['message' => 'Not found'], 404);
+            return new JsonResponse(['message' => 'Not found'], 404, [], JSON_PRETTY_PRINT);
         }
 
         return $this->prepareResponse($this->dispatch('delete', [$entity, $request]));
