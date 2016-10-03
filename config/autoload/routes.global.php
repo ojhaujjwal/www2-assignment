@@ -32,5 +32,11 @@ return [
             'middleware' => Api\TvShow\ReviewResource::class,
             'allowed_methods' => ['GET', 'POST'],
         ],
+        [
+            'name' => 'api.reviews',
+            'path' => '/api/reviews/{id:\d+}',
+            'middleware' => Api\TvShow\ReviewResource::class,
+            'allowed_methods' => ['PUT', 'DELETE'],
+        ],
     ],
 ];

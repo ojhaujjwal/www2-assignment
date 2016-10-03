@@ -11,7 +11,8 @@ return [
         'invokables' => [
             Helper\ServerUrlHelper::class => Helper\ServerUrlHelper::class,
             TvShowInputFilter::class => TvShowInputFilter::class,
-            ReviewInputFilter::class => ReviewInputFilter::class
+            ReviewInputFilter::class => ReviewInputFilter::class,
+            Api\ApiMiddleware::class => Api\ApiMiddleware::class
         ],
 
         'factories' => [

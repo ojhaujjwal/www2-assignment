@@ -5,6 +5,7 @@ use Api\AbstractResource;
 use App\Entity\Review;
 use App\Entity\TvShow;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response\JsonResponse;
 
 class ReviewResource extends AbstractResource
 {
@@ -31,5 +32,20 @@ class ReviewResource extends AbstractResource
             ->getRepository(TvShow::class)
             ->find($request->getAttribute('tvShowId'));
         return $tvShow->getReviews();
+    }
+
+    public function update(Review $review)
+    {
+        $this->entityManager->persist($review);
+        $this->entityManager->flush();
+
+        return $review;
+    }
+
+    public function delete(Review $review)
+    {
+        $this->entityManager->remove($review);
+        $this->entityManager->flush();
+        return new JsonResponse(null, 204);
     }
 }

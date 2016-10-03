@@ -72,15 +72,15 @@ class AbstractResource
             return $this->handlePost($data, $request);
         } elseif ($method === 'PUT') {
             if (isset($attributes['id'])) {
-                return $this->prepareResponse($this->dispatch('update', [$attributes['id'], $data, $request]));
+                return $this->handleUpdate($attributes['id'], $data, $request);
             }
         } elseif ($method === 'PATCH') {
             if (isset($attributes['id'])) {
-                return $this->prepareResponse($this->dispatch('patch', [$attributes['id'], $data, $request]));
+                return $this->handleUpdate($attributes['id'], $data, $request);
             }
         } elseif ($method === 'DELETE') {
             if (isset($attributes['id'])) {
-                return $this->prepareResponse($this->dispatch('delete', [$attributes['id'], $request]));
+                return $this->handleDelete($attributes['id'], $request);
             }
         } else {
             return $this->prepareResponse((new ApiProblem(405, 'Method not allowed!'))->toArray());
@@ -89,11 +89,11 @@ class AbstractResource
         return $this->prepareResponse((new ApiProblem(400, 'Bad Request'))->toArray());
     }
 
-    private function handlePost($data, ServerRequestInterface $request)
+    private function handlePost(array $data, ServerRequestInterface $request)
     {
         $this->inputFilter->setData($data);
         if (!$this->inputFilter->isValid()) {
-            return new JsonResponse($this->extractErrorMessages($this->inputFilter), 422);
+            return new JsonResponse($this->extractErrorMessages($this->inputFilter), 422, [], JSON_PRETTY_PRINT);
         }
 
         $data = $this->inputFilter->getValues();
@@ -103,7 +103,45 @@ class AbstractResource
             $data = $this->hydrator->hydrate($data, new $entityClass);
         }
 
-        return $this->prepareResponse($this->dispatch('create', [$data, $request]));
+        return $this->prepareResponse($this->dispatch('create', [$data, $request]), 201);
+    }
+
+    private function handleUpdate($id, array $data, ServerRequestInterface $request)
+    {
+        $this->inputFilter->setData($data);
+        if (!$this->inputFilter->isValid()) {
+            return new JsonResponse($this->extractErrorMessages($this->inputFilter), 422, [], JSON_PRETTY_PRINT);
+        }
+
+        $data = $this->inputFilter->getValues();
+
+        $entityClass = static::ENTITY_CLASS;
+        if (empty($entityClass)) {
+            return $this->prepareResponse($this->dispatch('update', [$id, $data, $request]));
+        }
+
+        $entity = $this->entityManager->getRepository($entityClass)->find($id);
+        if (!$entity) {
+            return new JsonResponse(['message' => 'Not found'], 404);
+        }
+        $entity = $this->hydrator->hydrate($data, $entity);
+
+        return $this->prepareResponse($this->dispatch('update', [$entity, $request]));
+    }
+
+    private function handleDelete($id, ServerRequestInterface $request)
+    {
+        $entityClass = static::ENTITY_CLASS;
+        if (empty($entityClass)) {
+            return $this->prepareResponse($this->dispatch('delete', [$id, $request]));
+        }
+
+        $entity = $this->entityManager->getRepository($entityClass)->find($id);
+        if (!$entity) {
+            return new JsonResponse(['message' => 'Not found'], 404);
+        }
+
+        return $this->prepareResponse($this->dispatch('delete', [$entity, $request]));
     }
 
     protected function prepareResponseData($result)
@@ -129,12 +167,10 @@ class AbstractResource
         return new ApiProblem(502, 'Bad gateway');
     }
 
-    protected function prepareResponse($result)
+    protected function prepareResponse($result, $defaultStatus = 200)
     {
         if ($result instanceof ApiProblem) {
-            $response = new JsonResponse($result->toArray());
-
-            return $response->withStatus($result->status);
+            return new JsonResponse($result->toArray(), $result->status, [], JSON_PRETTY_PRINT);
         } elseif ($result instanceof JsonResponse) {
             return $result;
         }
@@ -144,7 +180,7 @@ class AbstractResource
             return $this->prepareResponse($result);
         }
 
-        return new JsonResponse($result);
+        return new JsonResponse($result, $defaultStatus, [], JSON_PRETTY_PRINT);
     }
 
     private function dispatch($method, $arguments)
