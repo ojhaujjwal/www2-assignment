@@ -34,6 +34,10 @@ class TvShowResource extends AbstractResource
     protected function fetchAll($data = [])
     {
         $repository = $this->entityManager->getRepository(static::ENTITY_CLASS);
-        return new ArrayCollection($repository->findBy([], [$data['sort'] ?? null => 'ASC']));
+        $sort = [];
+        if (isset($data['sort'])) {
+            $sort[$data['sort']] = 'ASC';
+        }
+        return new ArrayCollection($repository->findBy([], $sort));
     }
 }
