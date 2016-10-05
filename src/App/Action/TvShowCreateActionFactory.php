@@ -3,13 +3,12 @@
 namespace App\Action;
 
 use Interop\Container\ContainerInterface;
-use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
-class HomePageFactory
+class TvShowCreateActionFactory
 {
     public function __invoke(ContainerInterface $container)
     {
-        return new HomePageAction($container->get(TemplateRendererInterface::class), ['page' => 'home']);
+        return new TvShowCreateAction($container->get(TemplateRendererInterface::class));
     }
 }

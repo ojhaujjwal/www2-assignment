@@ -7,7 +7,8 @@ return [
             App\Action\PingAction::class => App\Action\PingAction::class
         ],
         'factories' => [
-            App\Action\HomePageAction::class => App\Action\HomePageFactory::class,
+            App\Action\HomePageAction::class      => App\Action\HomePageFactory::class,
+            App\Action\TvShowCreateAction::class  => App\Action\TvShowCreateActionFactory::class,
             Api\TvShow\TvShowResource::class      => Api\TvShow\TvShowResourceFactory::class,
             Api\TvShow\ReviewResource::class      => Api\TvShow\ReviewResourceFactory::class,
         ],
@@ -18,6 +19,12 @@ return [
             'name' => 'home',
             'path' => '/',
             'middleware' => App\Action\HomePageAction::class,
+            'allowed_methods' => ['GET'],
+        ],
+        [
+            'name' => 'tv-shows/create',
+            'path' => '/tv-shows/create',
+            'middleware' => App\Action\TvShowCreateAction::class,
             'allowed_methods' => ['GET'],
         ],
         [

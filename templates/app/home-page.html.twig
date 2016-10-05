@@ -43,18 +43,64 @@
     </div>
   </div>
 
-  <div class="row">
-    <form>
-      <!--TODO create review form here -->
+  <div class="row" v-if="reviewForm">
+
+    <form @submit.prevent="createReview()">
+      <div class="form-group">
+        <label for="reviewerName">Name</label><br/>
+        <input type="text" class="form-control" id="reviewerName" v-model="newReview.reviewerName">
+        <br/>
+        <div>
+          <div v-for="error in errors.reviewerName" class="alert alert-warning" role="alert">
+            {{ '{{ error }}' }}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="review">Description</label><br/>
+        <input type="text" class="form-control" id="review" v-model="newReview.review">
+        <br/>
+        <div>
+          <div v-for="error in errors.review" class="alert alert-warning" role="alert">
+            {{ '{{ error }}' }}
+          </div>
+        </div>
+      </div>
+
+      <br/>
+
+      <div class="form-group">
+        <label for="review">Rating</label><br/>
+        <select v-model="newReview.rating" class="form-control">
+          <option v-for="rating in [1, 2, 3, 4, 5]">
+            {{ '{{ rating }}' }}
+          </option>
+        </select>
+        <br/>
+        <div>
+          <div v-for="error in errors.rating" class="alert alert-warning" role="alert">
+            {{ '{{ error }}' }}
+          </div>
+        </div>
+      </div>
+
+      <br/>
+
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary">Create</button>
+        <button class="btn btn-default" v-if="reviewForm" @click="cancelNewReview()">Cancel</button>
+      </div>
     </form>
   </div>
 
-  <div v-if="reviews.length">
+  <div>
     <div class="row">
       <h1>Reviews</h1>
+      <button class="btn btn-primary" v-if="!reviewForm" @click="toggleNewReview()">Add Review</button>
     </div>
 
-    <div class="row">
+    <div class="row" v-if="reviews.length">
       <div v-for="review in reviews" class="col-md-4">
         <h3>{{ '{{ review.reviewerName }}' }}</h3>
         <span class="rating" class="pull-right"></span>

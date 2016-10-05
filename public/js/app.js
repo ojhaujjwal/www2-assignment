@@ -9,7 +9,14 @@
         description: '',
         imageUrl: ''
       },
-      reviews: []
+      reviews: [],
+      reviewForm: false,
+      newReview: {
+        title: '',
+        description: '',
+        rating: ''
+      },
+      errors: []
     },
     mounted: function() {
       var _this = this;
@@ -23,6 +30,12 @@
       });
     },
     methods: {
+      toggleNewReview: function () {
+        this.reviewForm = true;
+      },
+      cancelNewReview: function () {
+        this.reviewForm = false;
+      },
       escapeHtml: function (html) {
         var txt = document.createElement('textarea');
         txt.innerHTML= html;
@@ -72,17 +85,18 @@
           }
         });
       },
-      createReview: function(tvShowId, review) {
+      createReview: function() {
         var _this = this;
         this.resource({
           method: 'post',
-          url: '/api/tv-shows/' + tvShowId + '/reviews',
-          data: review,
+          url: '/api/tv-shows/' + _this.tvShow.id + '/reviews',
+          data: _this.newReview,
           onSuccess: function (review) {
             _this.reviews.push(review);
+            _this.reviewForm = false;
           },
           onError: function (error) {
-            //@todo handle validation error
+            _this.errors = error.data;
           }
         });
       }
