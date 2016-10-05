@@ -1,0 +1,21 @@
+<?php
+
+return [
+    'debug' => true,
+
+    'config_cache_enabled' => false,
+
+    'doctrine' => [
+        'connection' => [
+            'orm_default' => [
+                'params' => [
+                    'host'     => 'localhost',
+                    'port'     => '3306',
+                    'user'     => 'root',
+                    'password' => 'root',
+                    'dbname'   => 'database',
+                ],
+            ],
+         ]
+    ]
+];

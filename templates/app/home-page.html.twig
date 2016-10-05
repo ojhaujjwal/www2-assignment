@@ -103,7 +103,10 @@
     <div class="row" v-if="reviews.length">
       <div v-for="review in reviews" class="col-md-4">
         <h3>{{ '{{ review.reviewerName }}' }}</h3>
-        <span class="rating" class="pull-right"></span>
+        <span class="pull-right" v-for="n in review.rating">☆</span>
+        <div class="rating pull-right">
+          
+        </div>
         <p>
           {{ '{{ review.review }}' }}
         </p>
