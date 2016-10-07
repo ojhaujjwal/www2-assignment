@@ -45,10 +45,10 @@
 
   <div class="row" v-if="reviewForm">
 
-    <form @submit.prevent="createReview()">
+    <form @submit.prevent="saveReview()">
       <div class="form-group">
         <label for="reviewerName">Name</label><br/>
-        <input type="text" class="form-control" id="reviewerName" v-model="newReview.reviewerName">
+        <input type="text" class="form-control" id="reviewerName" v-model="review.reviewerName">
         <br/>
         <div>
           <div v-for="error in errors.reviewerName" class="alert alert-warning" role="alert">
@@ -59,7 +59,7 @@
 
       <div class="form-group">
         <label for="review">Description</label><br/>
-        <input type="text" class="form-control" id="review" v-model="newReview.review">
+        <input type="text" class="form-control" id="review" v-model="review.review">
         <br/>
         <div>
           <div v-for="error in errors.review" class="alert alert-warning" role="alert">
@@ -72,7 +72,7 @@
 
       <div class="form-group">
         <label for="review">Rating</label><br/>
-        <select v-model="newReview.rating" class="form-control">
+        <select v-model="review.rating" class="form-control">
           <option v-for="rating in [1, 2, 3, 4, 5]">
             {{ '{{ rating }}' }}
           </option>
@@ -88,7 +88,7 @@
       <br/>
 
       <div class="form-group">
-        <button type="submit" class="btn btn-primary">Create</button>
+        <button type="submit" class="btn btn-primary">Save</button>
         <button class="btn btn-default" v-if="reviewForm" @click="cancelNewReview()">Cancel</button>
       </div>
     </form>
@@ -101,8 +101,10 @@
     </div>
 
     <div class="row" v-if="reviews.length">
-      <div v-for="review in reviews" class="col-md-4">
+      <div v-for="(review, index) in reviews" class="col-md-4">
         <h3>{{ '{{ review.reviewerName }}' }}</h3>
+        <a @click="toggleEditReview(index)" class="pull-right"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+        <a @click="deleteReview(index)" class="pull-right"><i class="fa fa-times" aria-hidden="true"></i></a>
         <span class="pull-right" v-for="n in review.rating">☆</span>
         <div class="rating pull-right">
           

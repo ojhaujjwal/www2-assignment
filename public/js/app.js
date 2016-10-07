@@ -11,7 +11,8 @@
       },
       reviews: [],
       reviewForm: false,
-      newReview: {
+      review: {
+        id: null,
         title: '',
         description: '',
         rating: ''
@@ -31,10 +32,29 @@
     },
     methods: {
       toggleNewReview: function () {
+        this.review.id = null;
+        this.reviewForm = true;
+      },
+      toggleEditReview: function (index) {
+        this.review = this.reviews[index];
+        this.review.index = index;
         this.reviewForm = true;
       },
       cancelNewReview: function () {
         this.reviewForm = false;
+      },
+      deleteReview: function (index) {
+        var _this = this;
+        return this.resource({
+          method: 'delete',
+          url: '/api/reviews/' + _this.reviews[index].id,
+          onSuccess: function () {
+            _this.reviews.splice(index, 1);
+          },
+          onError: function (error) {
+            _this.errors = [error.data.message];
+          }
+        });
       },
       escapeHtml: function (html) {
         var txt = document.createElement('textarea');
@@ -85,12 +105,27 @@
           }
         });
       },
-      createReview: function() {
+      saveReview: function() {
         var _this = this;
+        if (_this.review.id) {
+          return this.resource({
+            method: 'put',
+            url: '/api/reviews/' + _this.review.id,
+            data: _this.review,
+            onSuccess: function (review) {
+              var index = _this.review.index;
+              _this.reviews[index] = review;
+              _this.reviewForm = false;
+            },
+            onError: function (error) {
+              _this.errors = error.data;
+            }
+          });
+        }
         this.resource({
           method: 'post',
           url: '/api/tv-shows/' + _this.tvShow.id + '/reviews',
-          data: _this.newReview,
+          data: _this.review,
           onSuccess: function (review) {
             _this.reviews.push(review);
             _this.reviewForm = false;
